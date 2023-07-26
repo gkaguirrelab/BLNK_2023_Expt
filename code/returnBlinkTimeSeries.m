@@ -32,7 +32,7 @@ function [blinkVector,temporalSupport, nTrials, blinkVectorRaw, trialIndices, bl
     % Pick a pressure level to plot
     scanNumbers = [4, 7, 13, 20, 21]; % 40 PSI
 %    scanNumbers = [2, 10, 11, 18, 22]; % 20 PSI
-%    scanNumbers = [3, 8, 15, 16, 22]; % 10 PSI
+%    scanNumbers = [3, 8, 15, 16, 23]; % 10 PSI
 %    scanNumbers = [5, 6, 12, 17, 24]; % 5 PSI
 %    scanNumbers = [1, 9, 14, 19, 25]; % 0 PSI
     subjectID = 'BLNK_0001';
