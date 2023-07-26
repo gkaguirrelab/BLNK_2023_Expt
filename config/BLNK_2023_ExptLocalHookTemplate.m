@@ -23,7 +23,7 @@ if (ispref(projectName))
     rmpref(projectName);
 end
 
-% Define a save location for plots
+% Get user name
 if ismac
     [~, userName] = system('whoami');
     userName = strtrim(userName);
@@ -36,12 +36,20 @@ else
 end
 
 
-% DropBox
-dropboxBaseDir = ...
-    fullfile('/Users', userName, ...
-    'Dropbox (Aguirre-Brainard Lab)');
+% Get the DropBox path
+if ismac
+    dbJsonConfigFile = '~/.dropbox/info.json';
+    fid = fopen(dbJsonConfigFile);
+    raw = fread(fid,inf);
+    str = char(raw');
+    fclose(fid);
+    val = jsondecode(str);
+    dropboxBaseDir = val.business.path;
+else
+    error('Need to set up DropBox path finding for non-Mac machine')
+end
 
-% Path to paper directory
+% Path to data and analysis directories
 switch userName
     case 'aguirre'
         analysisDir = fullfile(dropboxBaseDir,'BLNK_analysis','expt01_summer2023');
@@ -51,6 +59,7 @@ switch userName
         dataDir = fullfile(dropboxBaseDir,'BLNK_data','expt01_summer2023');
 end
 
+% Set the prefs
 setpref(projectName,'analysisDir',analysisDir);
 setpref(projectName,'dataDir',dataDir);
 
