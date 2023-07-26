@@ -1,4 +1,4 @@
-function [blinkVector,temporalSupport, nTrials, blinkVectorRaw, trialIndices, blinkVectorBoots, bootSam] = returnBlinkTimeSeries( subjectID,sessionID,scanNumbers,ipsiOrContra,discardFirstTrialFlag,discardSquintScansFlag,nBootResamples,minValidIpsiBlinksPerAcq,minValidAcq,nSamplesBeforeStim,nSamplesAfterStim,deltaT )
+function [blinkVector,temporalSupport, nTrials, blinkVectorRaw, trialIndices, blinkVectorBoots, bootSam] = returnBlinkTimeSeries( subjectID,sessionID,scanNumbers,ipsiOrContra,discardFirstTrialFlag,nBootResamples,nSamplesBeforeStim,nSamplesAfterStim,deltaT )
 % Loads I-Files and conducts an analysis of time series data
 %
 % Syntax:
@@ -29,7 +29,12 @@ function [blinkVector,temporalSupport, nTrials, blinkVectorRaw, trialIndices, bl
 %
 % Examples:
 %{
-    scanNumbers = [2, 10, 11, 18, 22];
+    % Pick a pressure level to plot
+    scanNumbers = [4, 7, 13, 20, 21]; % 40 PSI
+%    scanNumbers = [2, 10, 11, 18, 22]; % 20 PSI
+%    scanNumbers = [3, 8, 15, 16, 22]; % 10 PSI
+%    scanNumbers = [5, 6, 12, 17, 24]; % 5 PSI
+%    scanNumbers = [1, 9, 14, 19, 25]; % 0 PSI
     subjectID = 'BLNK_0001';
     sessionID = '2023-07-19';
     [blinkVector,temporalSupport] = returnBlinkTimeSeries( subjectID, sessionID, scanNumbers, 'ipsi' );
@@ -38,6 +43,7 @@ function [blinkVector,temporalSupport, nTrials, blinkVectorRaw, trialIndices, bl
 %}
 %{
     % Bootstrap resample across all acquisitions at one PSI
+    % GKA NEEDS TO UPDATE THIS EXAMPLE
     targetPSI = 30;
     subjectID = 15513;
     discardFirstTrialFlag = true;
@@ -54,10 +60,7 @@ arguments
     scanNumbers
     ipsiOrContra = 'ipsi';
     discardFirstTrialFlag = false;
-    discardSquintScansFlag = false;
     nBootResamples (1,1) {mustBeNumeric} = 0;
-    minValidIpsiBlinksPerAcq (1,1) {mustBeNumeric} = 0;
-    minValidAcq = 0;
     nSamplesBeforeStim = 10;
     nSamplesAfterStim = 150;
     deltaT = 3.333;
@@ -75,56 +78,15 @@ blinkVectorBoots = [];
 
 % Define the location of the i-files
 dataDirPath = fullfile( ...
-    getpref('BLNK_2023_Expt','analysisDir'), ...
+    getpref('BLNK_2023_Expt','dataDir'), ...
     subjectID, sessionID );
 
-% Define the location of the summary spreadsheet that we will use to
-% determine if a given trial is valid
-spreadsheet ='BUPenn_A FILE_A-mod_2023-07-21.xls';
+% Get the list of acquisitions in the directory
+dirList = dir(fullfile(dataDirPath,'2023*'));
 
-% Turn off a warning during readtable
-warnState = warning();
-warning('off','MATLAB:table:ModifiedAndSavedVarnames');
-
-% Read the table
-T = readtable(fullfile(dataDirPath,spreadsheet));
-
-% Restore the warning state
-warning(warnState);
-
-% Find the scans for this subject
-scanTable = T(ismember(T.PatientID,patientID),:);
-
-% Store the scan dates
-scanDates = unique(scanTable.ScanDate);
-
-% Now cull the table to remove invalid scans
-if discardSquintScansFlag
-    scanTable = scanTable(ismember(scanTable.notSquint,'TRUE'),:);
-    scanTable = scanTable(scanTable.numIpsi>=minValidIpsiBlinksPerAcq,:);
-end
-
-% Filter the table for just the requested scan numbers
-scanTable = scanTable(ismember(scanTable.ScanNumber,scanNumbers),:);
-
-% Filter out "invalid" blinks (per BlinkCNS processing) if the setting
-% minValidIpsiBlinksPerAcq is greater than zero
-if minValidIpsiBlinksPerAcq > 0
-    scanTable = scanTable(ismember(scanTable.Valid,'TRUE'),:);
-end
-
-% Check if we have an empty scanTable
-if isempty(scanTable)
-    blinkVector = nan(1,nSamplesBeforeStim+nSamplesAfterStim+1);
-    temporalSupport = nan(1,nSamplesBeforeStim+nSamplesAfterStim+1);
-    return
-end
-
-% Check if we have too few acquisitions
-if size(scanTable,1) < minValidAcq
-    blinkVector = nan(1,nSamplesBeforeStim+nSamplesAfterStim+1);
-    temporalSupport = nan(1,nSamplesBeforeStim+nSamplesAfterStim+1);
-    return
+% Throw a warning if the number of directories is something other than 25
+if length(dirList) ~= 25
+warning('Something other than 25 acquisition directories in here');
 end
 
 % Turn off a warning during readtable
@@ -132,23 +94,11 @@ warnState = warning();
 warning('off','MATLAB:table:ModifiedAndSavedVarnames');
 
 % Loop over the acquisitions
-for ii = 1:size(scanTable,1)
+for ii = 1:length(scanNumbers)
 
-    % In principle, the iFile name should be fully defined by the
-    % information in the data table provided by Andy from BlinkTBI. In
-    % practice, the scanID and scanNumber in the filenames do not agree
-    % with that in the table. It seems that the scanNumber value from the
-    % table can be ignored, and the scanID used as the unique identifier of
-    % the file. So, we find the matching scanID file, and check to make
-    % sure it is the only match
-    iFileName = ['l-file_' num2str(scanTable.subjectID(ii)) '_' num2str(scanTable.scanID(ii)) '_' '*' '.csv'];
-    fullFilePath = fullfile(dataDirPath,'data',dataSubdir,'iFiles',num2str(subjectID),iFileName);
-    fileList = dir(fullFilePath);
-    if length(fileList)>1
-        error('Too many files');
-    else
-        fullFilePath = fullfile(fileList.folder,fileList.name);
-    end
+    % Load the iFile in this for this scan
+    iFileName = 'l-file.csv';
+    fullFilePath = fullfile(dirList(scanNumbers(ii)).folder,dirList(scanNumbers(ii)).name,iFileName);
 
     % Load the iFile into a table
     T = readtable(fullFilePath);
