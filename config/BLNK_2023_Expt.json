@@ -1,0 +1,17 @@
+[
+	{
+	"flavor": "",
+	"hook": "",
+	"importance": "",
+	"localHookTemplate": "config/BLNK_2023_ExptLocalHookTemplate.m",
+	"printLocalHookOutput": "1",
+	"name": "BLNK_2023_Expt",
+	"pathPlacement": "append",
+	"subfolder": "code",
+	"toolboxRoot": "",
+	"type": "git",
+	"update": "",
+	"url": "https://github.com/gkaguirrelab/BLNK_2023_Expt.git"
+	}
+]
+
