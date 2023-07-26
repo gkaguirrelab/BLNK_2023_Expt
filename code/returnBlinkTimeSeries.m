@@ -169,7 +169,7 @@ for ii = 1:length(scanNumbers)
     end
 
     % center pre-stimulus around zero
-    posAvg = nanmean(pos);
+    posAvg = mean(pos,"omitnan");
     posAvgPreStim = mean(posAvg(1:nSamplesBeforeStim));
     posAvg = posAvg - posAvgPreStim;
 
