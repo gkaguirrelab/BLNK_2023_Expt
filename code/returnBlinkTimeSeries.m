@@ -27,24 +27,6 @@ function [blinkVector,blinkVectorSEM,temporalSupport,nTrials, blinkVectorRaw, tr
 %   nTrials               - Scalar
 %   blinkVectorRaw        - nTrials x time matrix of raw responses
 %
-% Examples:
-%{
-    % Pick a pressure level to plot
-%    scanNumbers = [4, 7, 13, 20, 21]; % 40 PSI
-    scanNumbers = [2, 10, 11, 18, 22]; % 20 PSI
-%    scanNumbers = [3, 8, 15, 16, 23]; % 10 PSI
-%    scanNumbers = [5, 6, 12, 17, 24]; % 5 PSI
-%    scanNumbers = [1, 9, 14, 19, 25]; % 0 PSI
-    subjectID = 'BLNK_0001';
-    sessionID = '2023-07-19';
-    [blinkVector,blinkVectorSEM,temporalSupport] = returnBlinkTimeSeries( subjectID, sessionID, scanNumbers, 'ipsi' );
-    pHandle = patch([temporalSupport,fliplr(temporalSupport)],[blinkVector+blinkVectorSEM,fliplr(blinkVector-blinkVectorSEM)],'r')
-    pHandle.FaceAlpha = 0.1; pHandle.LineStyle = 'none';
-    hold on
-    plot(temporalSupport,blinkVector,'-r','LineWidth',2)
-    xlabel('time [msecs]');
-    ylabel('lid position [pixels]');
-%}
 %{
     % Bootstrap resample across all acquisitions at one PSI
     % GKA NEEDS TO UPDATE THIS EXAMPLE
