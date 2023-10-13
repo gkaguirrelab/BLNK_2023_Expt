@@ -24,20 +24,28 @@ function graphGKALightPilot(subjectID, sessionID)
     newDataDir = strrep(origDataDir,'expt01_summer2023','light_level_pilot');
     setpref('BLNK_2023_Expt','dataDir',newDataDir);
 
-    % Pressure levels to plot
-    scanNumbers(1,:) = [1, 6, 7]; % 10 PSI
-    scanNumbers(2,:) = [2, 5, 8]; % 20 PSI
-    scanNumbers(3,:) = [3, 4, 9]; % 40 PSI
+    % Pressure levels to plot (8/11/2023)
+    %scanNumbers(1,:) = [1, 6, 7]; % 10 PSI
+    %scanNumbers(2,:) = [2, 5, 8]; % 20 PSI
+    %scanNumbers(3,:) = [3, 4, 9]; % 40 PSI
+
+    % Pressure levels to plot (10/11/2023)
+    scanNumbers(1,:) = [1, 3, 5]; % 5 PSI
+    scanNumbers(2,:) = [2, 4, 6]; % 20 PSI
     
     % Set up graph figure
     figure('Name',sprintf('%s Time Series', subjectID));
     xlabel('Time (msecs)');
     ylabel('Lid Position (pixels)');
     title(sprintf('%s Time Series', subjectID), 'Interpreter', 'none');
-    
-    % Make graph easier to visualize
-    colors = ['m', 'k', 'g', 'b', 'r'];
-    legendNames = ["0 PSI", "5 PSI", "10 PSI", "20 PSI", "40 PSI"];
+
+    % Make graph easier to visualize (8/11/2023)
+    %colors = ['g', 'b', 'r'];
+    %legendNames = ["10 PSI", "20 PSI", "40 PSI"];
+
+    % Make graph easier to visualize (10/11/2023)
+    colors = ['k', 'b'];
+    legendNames = ["5 PSI", "20 PSI"];
     
     for ii = 1:size(scanNumbers,1)
         [blinkVector,blinkVectorSEM,temporalSupport] = returnBlinkTimeSeries(subjectID, sessionID, scanNumbers(ii,:), 'ipsi' );
@@ -55,6 +63,6 @@ function graphGKALightPilot(subjectID, sessionID)
     setpref('BLNK_2023_Expt','dataDir',origDataDir);
 
     % Automatically saves figure to Gerdin's Dropbox directory
-    %savefig(sprintf('/Users/gerdinfalconi/Aguirre-Brainard Lab Dropbox/Gerdin Falconi/BLNK_analysis/expt01_summer2023/%s/%s/%s Time Series', subjectID, sessionID, subjectID));
+    %savefig(sprintf('/Users/gerdinfalconi/Aguirre-Brainard Lab Dropbox/Gerdin Falconi/BLNK_analysis/light_level_pilot/%s/%s/%s Time Series', subjectID, sessionID, subjectID));
 
 end
