@@ -31,8 +31,8 @@ function [blinkVector,blinkVectorSEM,temporalSupport,palpWidthByAcq,blinkVectorR
 %{
     % Bootstrap resample across all acquisitions at one PSI
     stimLevels = [1  4  3  5  2  2  5  3  1  4  4  2  5  1  3  3  2  4  1  5  5  4  3  2  1];
-    subjectID = 'BLNK_0018';
-    sessionID = '2023-09-20';
+    subjectID = 'BLNK_0009';
+    sessionID = '2023-09-26';
     ipsiOrContra = 'contra';
     discardFirstTrialFlag = true;
     figure
