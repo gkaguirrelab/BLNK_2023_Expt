@@ -23,7 +23,7 @@ sessionIDs{2} = {...
 psiLevels = [1 2 1 2 1 2 1 2];
 ipsiOrContra = 'ipsi';
 discardFirstTrialFlag = true;
-
+ggLabels = {'dark','light'};
 
 data = [];
 for gg = 1:2
@@ -48,13 +48,14 @@ for gg = 1:2
         y = [(data{gg}(pp,:)+dataSEM{gg}(pp,:)), fliplr((data{gg}(pp,:)-dataSEM{gg}(pp,:))) ];
         patch(x,y,'r','EdgeColor','none','FaceAlpha',0.1);
         hold on
-        plot(temporalSupport,data{gg}(pp,:),'-k','LineWidth',2);
+        plot(temporalSupport,data{gg}(pp,:),'-k','LineWidth',pp);
     end
     ylim([0 1.25]);
     subplot(1,2,2)
     bar(ss,mean(palpWidthByAcq));
     hold on
     ylim([0 200]);
+    title(ggLabels{gg})
 
 end
 
