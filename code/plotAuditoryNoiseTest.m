@@ -42,7 +42,7 @@ for side = 1:2
     end
     data{gg} = squeeze(mean(thisData,1));
     dataSEM{gg} = squeeze(std(thisData,[],1))./sqrt(length(subjectIDs{gg}));
-    subplot(1,2,side)
+    subplot(2,1,side)
     plot(temporalSupport,ones(size(temporalSupport)),':k');
     hold on
     for pp = 1:size(data{gg},1)
@@ -52,9 +52,11 @@ for side = 1:2
         pHandle(pp) = plot(temporalSupport,data{gg}(pp,:),['-' psiColors{pp}],'LineWidth',2);
     end    
     ylim([0 1.5]);
-    legend(pHandle,{'noisy','silent'},'Location','best');
+    legend(pHandle,{'air + sound','air'},'Location','best');
     title(ipsiOrContra{side});
-
+    xlabel('time [ms]');
+    ylabel('proportion open');
+    box off
 end
 
 
