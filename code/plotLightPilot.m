@@ -24,9 +24,12 @@ psiLevels = [1 2 1 2 1 2 1 2];
 ipsiOrContra = 'ipsi';
 discardFirstTrialFlag = true;
 ggLabels = {'dark','light'};
+stimColors = {'y','r'};
 
 data = [];
+    figure
 for gg = 1:2
+    subplot(1,2,gg)
     thisData = [];
     for ss = 1:length(subjectIDs{gg})
         subjectID = subjectIDs{gg}{ss};
@@ -41,20 +44,19 @@ for gg = 1:2
     end
     data{gg} = squeeze(mean(thisData,1));
     dataSEM{gg} = squeeze(mean(thisDataSEM,1));
-    figure
-    subplot(1,2,1)
     for pp = 1:size(data{gg},1)
         x = [temporalSupport, fliplr(temporalSupport)];
         y = [(data{gg}(pp,:)+dataSEM{gg}(pp,:)), fliplr((data{gg}(pp,:)-dataSEM{gg}(pp,:))) ];
-        patch(x,y,'r','EdgeColor','none','FaceAlpha',0.1);
+        patch(x,y,stimColors{pp},'EdgeColor','none','FaceAlpha',0.1);
         hold on
-        plot(temporalSupport,data{gg}(pp,:),'-k','LineWidth',pp);
+        plot(temporalSupport,data{gg}(pp,:),['-' stimColors{pp}],'LineWidth',pp);
     end
+    xlim([-50 250])
     ylim([0 1.25]);
-    subplot(1,2,2)
-    bar(ss,mean(palpWidthByAcq));
-    hold on
-    ylim([0 200]);
+    % subplot(1,2,2)
+    % bar(ss,mean(palpWidthByAcq));
+    % hold on
+    % ylim([0 200]);
     title(ggLabels{gg})
 
 end

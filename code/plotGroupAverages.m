@@ -1,5 +1,7 @@
 
 
+close all
+clear
 
 % subjectIDs{1} = {...
 %     'BLNK_0007', 'BLNK_0009', 'BLNK_0017', 'BLNK_0018', 'BLNK_0032',...
@@ -39,7 +41,7 @@ discardFirstTrialFlag = true;
 
 
 data = [];
-for gg = 1:1
+for gg = 1:length(subjectIDs)
     thisData = [];
     for ss = 1:length(subjectIDs{gg})
         subjectID = subjectIDs{gg}{ss};

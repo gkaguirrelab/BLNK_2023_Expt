@@ -35,7 +35,6 @@ else
     disp('What are you using?')
 end
 
-
 % Get the DropBox path
 if ismac
     dbJsonConfigFile = '~/.dropbox/info.json';
